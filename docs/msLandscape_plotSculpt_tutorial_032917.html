@@ -484,12 +484,12 @@ cd ~/Box\ Sync/Python_scripts/msLandscape
 </div>
 <div id="saving-plots-directly-to-file" class="section level3">
 <h3>Saving plots directly to file</h3>
-<p>By default, the plots created by the <code>msLandscape_networkPlotter</code> function print directly to the screen. However it is also possible to save them directly to a file (in pdf format).</p>
+<p>By default, the plots created by the <code>msLandscape_networkPlotter</code> function print to the screen. However it is also possible to save them directly to a file (in pdf format).</p>
 <p>Let’s do that here:</p>
 <pre class="r"><code>msLandscape::msLandscape_networkPlotter(msFlagFileName = &quot;~/Box Sync/Python_scripts/msLandscape/msLandscape_missingConnections_haploidSamples_ms_nsam_160_msFlagFile.txt&quot;,addPopnLabels = FALSE, savePlotToFile = TRUE, outputFileName = &quot;~/Box Sync/Python_scripts/msLandscape/msLandscape_networkPlotter_autoSavedPlot.pdf&quot;, plotWidth = 6, plotHeight = 6)</code></pre>
 <pre><code>## quartz_off_screen 
 ##                 2</code></pre>
-<p>This makes a plot that is six inches wide and six inches tall, and saves it to the file (or path + file) that we specified.</p>
+<p>This makes a plot that is six inches wide and six inches tall, and saves it to the file (or path + file) that we specified. (We do not worry about that <code>quartz_off_screen</code> message.)</p>
 </div>
 <div id="running-the-ms-simulations" class="section level3">
 <h3>Running the <em>ms</em> simulations</h3>
