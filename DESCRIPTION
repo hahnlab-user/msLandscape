@@ -1,0 +1,17 @@
+Package: msLandscape
+Type: Package
+Title: Streamlines the Creation of Landscape Scenarios to Simulate Using ms. 
+Version: 1.0
+Date: 2017-03-05
+Author: person("Geoffrey","House", email = "glhouse@indiana.edu", role = c("aut", "cre"))
+Maintainer: Geoffrey House <glhouse@indiana.edu>
+Description: msLandscape is a toolbox to automatically create ms instruction (flag) files for a wide range of landscape shapes, sizes, and migration scenarios. 
+    This allows quick production and visualization/troubleshooting of ms flag files that is useful before ms simulations are 
+    undertaken.
+License: GPL-3
+RoxygenNote: 6.0.1
+Imports:
+    dplyr,
+    igraph
+
+    

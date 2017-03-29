@@ -1,0 +1,518 @@
+---
+title: Using *msLandscape* to create customized landscape configurations for simulation
+  with *ms*
+author: "Geoffrey House"
+date: "March 29, 2017"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+### *msLandscape* overview
+
+*msLandscape* is a toolbox to make customized landscape-scale simulations with the coalescent simulator *ms* easier and faster. *msLandscape* consists of an R package, Python scripts, and a bash shell script wrapper around *ms* that work seamlessly together, so you can focus on building your landscape instead of needing to manually write *ms* instruction files or cobbling together data conversions.
+
+The *msLandscape* R package contains two R functions:  
+
+1) msLandscape_networkPlotter - This quickly visualizes any landscape configuration (population locations and their migration connections) contained in an *ms* flag file, including information about the number of individuals sampled from each population and the migration rate between each pair of populations. 
+
+2) msLandscape_convertToEEMSDiffs - This is a utility script to finish the conversion of simulated data from *ms* into the form pairwise differences format required for EEMS.
+
+This overview will only work with the msLandscape_networkPlotter and 3 of its accompanying scripts:  
+
+* msLandscape_create_ms_flagFile.py
+* msLandscape_cleanup_ms_flagFile.py
+* msLandscape_ms_multipleSimulationWrapper.sh
+
+To follow along easily with exactly what is written below, you will need to make these scripts executable. This can be done by running ```chmod u+x <scriptName>``` at the command line from within the directory containing the scripts, replacing ```<scriptName>``` with the name of the script (e.g. ```chmod u+x msLandscape_create_ms_flagFile.py```). 
+
+Alternatively, instead of pre-pending the './' to the scripts in order to run them as is done below, the Python scripts (ending in .py) can be run using e.g. ```python msLandscape_create_ms_flagFile.py```, and the bash shell script (ending in .sh) can be run using e.g. ```bash msLandscape_ms_multipleSimulationWrapper.sh```
+
+### Let's get started!
+
+We start with the Python script to build the landscape we want and to automatically generate the instruction (or flag) file for *ms* represents that landscape.
+
+This landscape is built using hexagonal 'tiles' of one sampled (focal) population surrounded by six unsampled (ghost) populations. Let us take a look at how we generate one of these 'tiles':
+
+```{bash}
+
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_create_ms_flagFile.py -r 1 -c 1
+
+```
+
+We have just created our first landscape! The output from the script has three parts that printed to the screen:
+
+1) The first part is the actual ms instruction information encoded as a series of flags that tells *ms* what landscape configuration and specifications we want to simulate. We will come back to this later.
+
+2) The second part is an ASCII representation of the landscape we just created. Because we just simulated a single hexagonal tile here, that is what is represented, with ```'*'``` representing unsampled (ghost) populations, the 
+```
+ @
+@0@
+ @
+```
+represents the single sampled (focal) population for this tile, and the lines of
+```':'``` representing each pairwise migration connection between populations. This ASCII representation allows us to quickly verify whether the landscape that we have created matches what we were expecting, but we will work with more flexible way to plot the landscape below.
+
+3) The coordinates of the focal population on the landscape - this really is minimal for a single population but becomes important then the landscape contains many focal populations and is used for *un-PC*, *EEMS*, and *SpaceMix* analysis after the ms simulation.
+
+### Expanding our landscape
+
+Let us make this landscape a little larger by adding additional hexagonal tiles to it. We can use the '-r' flag to specify how many rows of tiles we want for the landscape, and use the '-c' flag to specify the number of columns of tiles we want for the landscape. We will make it have five rows and two columns:
+
+```{bash, tidy = TRUE, tidy.opts=list(width.cutoff=60)}
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_create_ms_flagFile.py -r 5 -c 2
+
+```
+
+Now we can see from the ASCII representation that each row of tiles is staggered relative to the rows above and below it. (The staggering pattern can be inverted using the -s flag). The list of focal population locations now has the coordinates for each of the 10 focal populations. We also see that there are many more flags included in the *ms* instruction compared to before, and together they are getting too big to keep displaying on the screen. 
+
+### Saving the output as files
+
+If we do not want to print the output to the screen any longer, we can save it to files instead using the '-o' flag. With the '-o' flag, we specify the prefix stem for the output files we want made and there will be three separate files created:  
+
+1) the *ms* flag file
+2) the ASCII representation
+3) the coordinates of the focal populations
+
+Let us try that here:
+
+```{bash}
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_create_ms_flagFile.py -r 5 -c 2 -o writeOut
+
+```
+
+We see no output printed to screen now, but there are three new files in our directory, each with the 'writeOut' prefix stem that we specified using the '-o' flag:
+
+1) writeOut_haploidSamples_ms_nsam_100_msFlagFile.txt
+2) writeOut_ASCII_tilePlotFile.txt
+3) writeOut_popnCoordinatesFile.txt
+
+Two notes about the ms flag file output:
+
+1) The 'haploidSamples' part of the *ms* flag file name denotes that it will simulate haploid individuals (i.e. the number of simulated chromosomes is the same as the number of individuals to simulate). Simulating haploid samples is the default. This can be changed using the -d flag to signify whether the ms flag file should be diploid (i.e. simulate twice the number of chromosomes as the number of indiviudals; set '-d yes') or haploid (set '-d no' or just omit the -d flag like we did above). 
+
+2) The 'ms_nsam_100' part of the *ms* flag file name gives the total number of individuals to be simulated by the flag file, in this case 100. This is the 'nsam' value to use with *ms* when creating the simulation using this *ms* flag file. If we had used the '-d yes' flag above to simulate diploids, theis 'nsam' value would have been 200 instead.
+
+### Plotting the landscape configuration encoded by *ms* flag files
+
+Let us now use the *ms* flag file to try out the more flexible network graph-based landscape plotter in the msLandscape package. This function only requires the path to the *ms* flag file in order to plot to the plot window (see below for an example that saves the plot as a pdf to a file).
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_haploidSamples_ms_nsam_100_msFlagFile.txt")
+
+```
+
+Now we can see the landscape configuration specified by that long *ms* flag file! 
+
+The populations are denoted by symbols: 
+
+* Sampled (focal) populations have green-filled symbols with the size of the symbol proportional to the number of individuals that will be sampled from each population (this will be half the number of chromosomes sampled if the flag file is for diploids). 
+
+* Unsampled (ghost) populations have gray-filled symbols that are all the same size.
+
+The migration connection between each pair of populations is denoted by a line segment, with the width of the segment proportional to the specified migration rate between that pair of populations. Any migration connections in the ms flag file that are uni-directional (i.e. only specified in one direction between the population pair) are denoted by a pink line segment (See the 'Identifying missing migration connections' section below for an example).
+
+Now instead of trying to edit or proofread the *ms* flag file directly which can be tedious and error-prone, we can now visually check it much faster to see if it needs any changes.
+
+Each population (symbol) in this graph is labelled by its population number in the *ms* flag file (The script generating the *ms* flag file creates population 1 in the upper left corner of the landscape and then numbers populations from left-to-right and top-to-bottom). 
+
+As we see in the graph above, these labels **CAN** be reflected and/or rotated compared to how they are defined in the *ms* flag file, as well as what we would expect based on the ASCII representation (compare the pattern of tiling between the first row of the graph above with that in the ASCII representation). Because the orientation of the graphs can shift compared to what we might expect, these population labels can be important to initially orient ourselves to how the landscape configuration has been plotted. 
+
+These population labels also make it easy to specify specific populations to edit (we will get to that soon).
+
+*Note:* the landscape configuration for a given *ms* flag file should plot in the same orientation regardless of whether it is plotted with or without labels. This allows us to turn the labels on to determine how the landscape has been plotted and then turn the labels off if we need to verify details of the landscape configuration that the labels may obscure. 
+
+Let's see how to turn these population labels off:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_haploidSamples_ms_nsam_100_msFlagFile.txt", addPopnLabels = FALSE)
+
+```
+
+This makes it easier to see the five rows and two columns of hexagonal tiles that we simulated (each has a focal population in its center). 
+
+It is also apparent that the tiles are not *exactly* evenly shaped hexagons. This is an artifact of the physical model of springs and repelling magnets that the network plotter uses to determine the landscape configuration based only on the information about populations and their connections that is contained in the *ms* flag file. This underlying physical model is what makes network plotting so versatile here - it can correctly find the landscape configuration for pretty much any landscape specified in the *ms* flag file.
+
+While we are working with the population numbers turned off, let us revisit the script that creates the *ms* flag file and look at its '-g' flag. This flag creates 'ring(s)' of hexagonal tiles comprised only of ghost populations (i.e. the center population of the tile is a ghost population instead of a focal population) around the entire array of tiles that contain focal populations.
+
+These rings of ghost population tiles act to enclose the full landscape of focal tiles in a border of additional ghost populations; this may better match the reality of population sampling on a landscape where the number of sampled populations is generally low compared to the species distribution. The number of ghost population tile rings to generate is specified by a number following the '-g' flag. Let us encircle the landscape we have been using with 1 ring of ghost tiles ('-g 1') and write the output directly to file:
+
+```{bash}
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_create_ms_flagFile.py -r 5 -c 2 -g 1 -o writeOut_withGhostRing
+
+```
+
+And now we plot the resulting landscape just like we did before (without population numbers):
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_withGhostRing_haploidSamples_ms_nsam_100_msFlagFile.txt", addPopnLabels = FALSE)
+
+```
+
+Alright! Even though using the rings of ghost population tiles is desireable in most situations, it can make the population numbering a bit cluttered, and so we will stick with our original landscape for the next stage of working with these *ms* flag files: 'sculpting' them! (Note: the sculpting process works exactly the same regardless of whether the landscape has rings of ghost population tiles or not.)
+
+### 'Sculpting' and otherwise editing *ms* flag files
+
+Now that we have a rectangular lanscape configuration, we can think of it like a sculptor approaches a block of stone - it is our raw material that starts larger than our desired landscape shape; we can remove populations and change the sampling of focal populations as we work to create a landscape configuration that better matches the shape we need.
+
+Let us see how this works.
+
+First, we will re-plot our original landscape using the population labels:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_haploidSamples_ms_nsam_100_msFlagFile.txt", addPopnLabels = TRUE)
+
+```
+
+Say we want to remove populations from the lower left and the upper right corners of the landscape, for example because in our study system those areas correspond to the ocean, and we know the organism we are simulating cannot live there. To remove populations we need to create a plain text file (e.g. using TextEdit on a Mac) that lists the populations that we want to remove by using each population's number label from our landscape configuration graph, **with one population per line**. The population numbers can be given in any order. Note that this fully removes the specified populations, including all of their migration connections, from the landscape. 
+
+For example, let us start with removing the focal populations #7 and #38, and the ghost population #12. Here are the contents of our file to do this:
+
+```
+12  
+7  
+38  
+```
+
+We will save this as 'msLandscapeDemo_populationsToRemove1.txt'
+
+Now we use the Python script called 'ghostLands_msFlagFileCleanUp.py' to take care of editing the *ms* flag file for us, using the -f flag to provide the name of the *ms* flag file we want to edit, the -e flag to provide the name of the file containing the population numbers to remove that we just made, and the -p flag to provide the original file of focal population coordinates (generated automatically by the script that made our original *ms* flag file). Here we go:
+
+```{bash}
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_cleanup_ms_flagFile.py -f writeOut_haploidSamples_ms_nsam_100_msFlagFile.txt -e msLandscapeDemo_populationsToRemove1.txt -p writeOut_popnCoordinatesFile.txt
+
+```
+
+Alright, now let us plot the new flag file to see what the landscape looks like now that we have removed those three populations. In the plotting call below, note that the file name of the *ms* flag file after this screening/editing has changed in two ways:
+
+1) We removed two focal populations that each had 10 individuals sampled (by default), so our number of samples for ms is now 80 instead of 100 like it was before, and that is updated in the screened *ms* flag file name.
+
+2) The *ms* flag file name now includes the word 'screened' along with the number of times it has been screened through the Python script (currently one). This prevents the screened *ms* flag file from overwriting the initial *ms* flag file. In case we removed more populations from the landscape than we wanted with this screening, we can easily go back to the original *ms* flag file and start again. As we will see below, this also acts as a version numbering system for each incremental screen of the *ms* flag file. 
+
+And let us plot our newly screened *ms* flag file:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_haploidSamples_ms_nsam_80_screened_1_time_msFlagFile.txt", addPopnLabels = TRUE)
+
+```
+
+Even though this looks a bit weird, it did what we wanted.  Let us see how to verify this- 
+
+First, removing these populations caused the landscape configuration to be plotted as a mirror image compared to what we had before (i.e. population 1 is now in the upper left corner of the landscape as opposed to the upper right corner). The network plotter will sometimes do this and will also rotate the landscape compared to what we might expect (as it has also done here), which is why labelling the populations with their numbers can be important to orient ourselves.
+
+Alright, now that we are oriented the next thing to note is that the screening script always keeps the population numbers sequential. However for it to do this when populations have been deleted, as in our case here, it has to change some of the population numbers compared to our original graph. Before we had 44 populations, but now because we removed 3 populations, the population numbering stops at 41 instead. For instance, comparing the previous landscape configuration with the current one (after mentally flipping it), we can see for instance that current population #40 is the same as population #43 before.
+
+Now, let us verify that the correct populations have been removed:
+
+* To start with, we see that previous population #38 has been removed (along with all of its migration connections) as we specified in our editing file. Now there is a ring of ghost populations (#30-32; #37-39) around its previous location. 
+
+* We also specified previous population #7 to be removed, which would have resulted in a similar ring of ghost populations, except that we also removed previous population #12, a ghost population that 'anchored' one side of this ring of ghost populations to the rest of the landscape. Without previous population #12, the remaining ghost populations (current populations #4 and #5) are only connected to current population #3, forming a line of ghost populations.
+
+* Let us also make sure the screening did what we expect to the file containing the coordinates of the focal populations. This file was automatically generated by the initial landscape construction script, and contains one line per focal population. The first entry for each line is the y coordinate for that population on the landscape, and the second entry is the x coordinate, so an entry '5 3' would position the population at Cartesian coordinates (3,5). These coordinates are 1-based and positive, with (1,1) being in the bottom left corner of the landscape. Here is what the file looked like before the screening:
+
+```
+5 2
+5 4
+4 1
+4 3
+3 2
+3 4
+2 1
+2 3
+1 2
+1 4
+```
+
+In order, these lines refer to locations of previous focal population numbers: #6, #7, #14, #15, #30, #31, #38, and #39. Because we removed focal populations #7 and #38, we would expect the second and the second to last entries of the original population coordinates to also be removed from the focal population coordinates file after screening. Let us make sure that happened. Here is the file after screening (in the file named "writeOut_haploidSamples_ms_nsam_80_screened_1_time_popnCoordsFile"):
+
+```
+5 2
+4 1
+4 3
+3 2
+3 4
+2 1
+2 3
+1 4
+```
+
+Good, They were removed.
+
+Now let us keep fine tuning the editing of the landscape:
+
+We want to remove the ghost populations remaining in the top right and the bottom left corners of the landscape. So we will start making a **new** text file for populations to edit from this current landscape configuration and enter those ghost population numbers:
+
+```
+4
+5
+11
+37
+38
+```
+
+We save this file as 'msLandscapeDemo_populationsToRemove2.txt'
+
+Let us remove these (Note - because this is the second screening, for it to work correctly we need to give the screening script both the *ms* flag file and the population coordinates file that have already been screened by it once - i.e. have 'screened_1_time' in their file names):
+
+```{bash}
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_cleanup_ms_flagFile.py -f writeOut_haploidSamples_ms_nsam_80_screened_1_time_msFlagFile.txt -e msLandscapeDemo_populationsToRemove2.txt -p writeOut_haploidSamples_ms_nsam_80_screened_1_time_popnCoordsFile.txt
+
+```
+
+And then plot the new landscape configuration to see how it looks (Note - now we are plotting the *ms* flag file that has been screened twice - i.e. has 'screened_2_times' in its file name):
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_haploidSamples_ms_nsam_80_screened_2_times_msFlagFile.txt", addPopnLabels = TRUE)
+
+```
+
+Good, the ring and the the line of ghost populations have now been removed like we wanted.
+
+### Changing the sampling of focal populations
+
+We are pretty happy now with the overall shape of the landscape, but we still want to do two more things:
+
+1) We want to remove the ghost populations around focal population #25 (i.e. removing populations #19, #27, and #28)
+
+2) We want to change the number of individuals that are sampled from some of the current focal populations.
+
+We already know how to accomplish our first goal, and the good news is we can use the same population screening file and the same screening script to accomplish our second goal at the same time.
+
+To do this, we start by creating another plain text file of populations to remove:
+
+```
+19
+27
+28
+```
+
+OK. Now we want to change the number of individuals sampled from population #9 from its current value of 10 individuals (the default) to 35 individuals. We do this by adding a line with two entries to the file to edit that we started above. On this line, the first entry is the population number and the second entry is the new number of individuals we want sampled from that population, so in this case the line will be:
+
+```
+9 35
+```
+
+And we add that to our text file with populations to edit:
+
+```
+19
+27
+28
+9 35
+```
+
+A note about this:
+
+Entries for populations to delete and entries for populations to change the sampling can be interspersed in this file and they do not have to be in a particular order. *For clarity and for the script to run correctly, there should be only one entry (line) per population (either deleting that population or changing the number of individuals sampled).* 
+
+Changing the number of individuals sampled can also be used to turn a previous focal population into a ghost population by setting its new sampling to 0. Let us suppose we do not want focal population #25, but we still want it simulated as a ghost on the landscape with all of its migration connections. We will use the line:
+
+```
+25 0
+```
+in the editing file to turn it into a ghost population instead.
+
+Let us also change the sampling of population #18 to 22 individuals.
+
+Our final editing file then looks like this:
+
+```
+19
+27
+28
+9 35
+25 0
+18 22
+```
+
+We then save this file as 'msLandscapeDemo_populationsToRemove3.txt'
+
+Let us run it (using the '...screened_2_times...' *ms* flag file and population coordinates file with our new 'msLandscapeDemo_populationsToRemove3.txt' file) - 
+
+```{bash}
+cd ~/Box\ Sync/Python_scripts/msLandscape
+./msLandscape_cleanup_ms_flagFile.py -f writeOut_haploidSamples_ms_nsam_80_screened_2_times_msFlagFile.txt -e msLandscapeDemo_populationsToRemove3.txt -p writeOut_haploidSamples_ms_nsam_80_screened_2_times_popnCoordsFile.txt
+
+```
+
+And then plot the new landscape configuration to see how it looks (Note - now we are now plotting the *ms* flag file that has been screened three times):
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box\ Sync/Python_scripts/msLandscape/writeOut_haploidSamples_ms_nsam_107_screened_3_times_msFlagFile.txt", addPopnLabels = TRUE)
+
+```
+
+Great! We can see two things immediately:
+
+1) The size of the green dot marking focal populations #9 and #18 has changed in proportion to the new number of individuals sampled from each.
+
+2) Current population #24 (previous population #25) is now a ghost population (has a small gray dot marking its location as opposed to a green dot) as we wanted.
+
+Because we changed a previous focal population into a ghost population here, this is also updated in the population coordinates file ('writeOut_haploidSamples_ms_nsam_107_screened_3_times_popnCoordsFile'), which now has seven rows (one for each remaining focal population) as we can see:
+
+```
+5 2
+4 1
+4 3
+3 2
+3 4
+2 3
+1 4
+```
+
+### Identifying missing migration connections
+
+As mentioned above, when there is only one migration connection is specified between a pair of populations (uni-directional connection), instead of the usual two (bi-directional), then the network plotter represents each uni-directional connection with a pink line instad of with the solid gray line of a bi-directional connection. Uni-directional connections are usually a result of manually removing migration connections in the ms flag file but only deleting one of the two migration connections between each population pair. Note: uni-directional connections do not cause *ms* to fail, they just are not usually desired in the flag file.
+
+Let's look at this on a larger landscape using the included *ms* flag file: 'msLandscape_missingConnections_haploidSamples_ms_nsam_160_msFlagFile.txt'  
+
+This file is located in the 'data' directory of the msLandscape GitHub repository.
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box Sync/Python_scripts/msLandscape/msLandscape_missingConnections_haploidSamples_ms_nsam_160_msFlagFile.txt",addPopnLabels = FALSE)
+
+```
+
+With the population labels turned off, we can easily see that there are two pairwise connections that are only specified by a single migration connection (denoted by the pink lines).
+
+Now that we know there are missing migration connections, let us turn the population labelling on and see which populations have these uni-directional connections:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box Sync/Python_scripts/msLandscape/msLandscape_missingConnections_haploidSamples_ms_nsam_160_msFlagFile.txt",addPopnLabels = TRUE)
+
+```
+
+
+OK. Now we can see the uni-directional connections connect:
+
+* Populations #23 and #35
+* Populations #107 and #116
+
+(Note: The labels show up a bit cramped on this small plot; when working with the graph interactively in R, you can make the plot window larger and that makes the labels clearer).
+
+Let us see how these uni-directional connections look in the ms flag file that the network plot represents.
+
+In the current flag file, these appear as:
+
+```
+... -m 35 23 3.0 ...
+```
+
+and 
+
+```
+... -m 107 116 3.0 ...
+```
+
+Where each '-m' flag represents one direction of the connection from population #35 to population #23 (top) and from population #107 to population #116 (bottom). These are the only times these pairs of population numbers occur after a '-m' flag in this file. The '3.0' is the specified migration rate for that connection, and the '...' just implies that there are other contents in the file.
+
+This is in contrast with a bi-directional migration connection, for example between populations #10 and #18:
+
+```
+... -m 10 18 3.0 -m 18 10 3.0 ...
+```
+
+Now we can see how these bi-directional connections are set up - they specify migration both from population #10 to population #18 as well as from population #18 to population #10. To fix the uni-directional migration connections, we would manually add the following two '-m' flags to the flag file:
+
+```
+... -m 23 35 3.0 ...
+```
+
+and
+
+```
+... -m 116 107 3.0 ...
+```
+
+### Saving plots directly to file
+
+By default, the plots created by the ```msLandscape_networkPlotter``` function print to the screen. However it is also possible to save them directly to a file (in pdf format). 
+
+Let's do that here:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_networkPlotter(msFlagFileName = "~/Box Sync/Python_scripts/msLandscape/msLandscape_missingConnections_haploidSamples_ms_nsam_160_msFlagFile.txt",addPopnLabels = FALSE, savePlotToFile = TRUE, outputFileName = "~/Box Sync/Python_scripts/msLandscape/msLandscape_networkPlotter_autoSavedPlot.pdf", plotWidth = 6, plotHeight = 6)
+
+```
+
+This makes a plot that is six inches wide and six inches tall, and saves it to the file (or path + file) that we specified. (We do not worry about that ```quartz_off_screen``` message.)
+
+### Running the *ms* simulations
+
+OK, now we will return to our 'sculpted' landscape and will use it to create the coalescent simulations with *ms*. *msLandscape* includes a small wrapper script around *ms* that enables the generation of multiple, independent simulations from the same *ms* flag file. Each of these independent simulations will return slightly different results due to the stochastic nature of coalescent simulations, but each is consistent with the landscape features specified by the *ms* flag file. In order to ensure each of these multiple simulations is independent, Python is used within the wrapper script to generate random number seeds that are used for each *ms* invocation.
+
+The arguments to the 'msLandscape_ms_multipleSimulationWrapper.sh' script are as follows (also printed by running the script with no input):
+
+Usage: ```bash msLandscape_ms_multipleSimulationWrapper.sh <nsam> <howmany> <msFlagFile> <numItersToRun> <outputFileStem>```
+
+Where - 
+
+1) ```<nsam>``` is directly passed to *ms* and is the number of chromosomes to simulate. This is the number that appears after 'ms_nsam_' in the *ms* flag file name that we made above (e.g. our *ms* flag file is 'writeOut_haploidSamples_ms_nsam_107_screened_3_times_msFlagFile.txt' and the ```<nsam>``` value is 107). This cannot be changed for any given *ms* flag file because it represents the specified sampling of chromosomes that is specified after the '-I' flag in the *ms* flag file.
+
+2) ```<howmany>``` is directly passed to *ms* and is the number of loci to simulate. This can be any desired value.
+
+3) ```<msFlagFile>``` is the name of our *ms* flag file, in this case 'writeOut_haploidSamples_ms_nsam_107_screened_3_times_msFlagFile.txt'
+
+4) ```<numItersToRun>``` is the number of independent simulation iterations that we want run with this *ms* flag file. This can be any desired value.
+
+5) ```<outputFileStem>``` is the user entered file name prefix that will be used to construct the output file for each independent *ms* simulation. Files are named ```<outputFileStem>_Iter_##.msout``` where ```<outputFileStem>``` is replaced with its user entered value and ```##``` is replaced by the iteration number for the given simulation output.
+
+**Note:** The arguments **must** appear in exactly this order (separated by spaces) for the script to work correctly.
+
+Now we can put this all together to create the simulations. Running these simulations is simple as long as *ms* is on our $PATH:
+
+Note - the code block below does not run in the .Rmd file
+
+```
+$ bash msLandscape_ms_multipleSimulationWrapper.sh 107 100 writeOut_haploidSamples_ms_nsam_107_screened_3_times_msFlagFile.txt 3 msLandscape_msTrialSimulations
+Output name is: msLandscape_msTrialSimulations_Iter_1.msout
+Output name is: msLandscape_msTrialSimulations_Iter_2.msout
+Output name is: msLandscape_msTrialSimulations_Iter_3.msout
+
+```
+
+That's it! We have just made the landscape simulations from our 'sculpted' landscape in the *ms* flag file. Because we specified three independent simulations to be run, if we look in our directory after running this command, we will see the three new .msout files that contain the *ms* simulation results:
+
+```
+msLandscape_msTrialSimulations_Iter_1.msout
+msLandscape_msTrialSimulations_Iter_2.msout
+msLandscape_msTrialSimulations_Iter_3.msout
+```
+
+These *ms* simulation results can then be used for any downstream analysis, including conversion to the data formats required for:
+
+* *smartPCA* followed by *unPC*
+* *EEMS*
+* *SpaceMix* 
+
+That is accomplished by other scripts in the *msLandscape* toolbox and are demonstrated in the '*msLandscape* data conversion' tutorial.
+
+### Limitations to what this workflow can do automatically
+
+Although this work flow is versatile and should streamline building and proofing landscape-scale *ms* flag files, there are some important limitations to what it can do automatically:
+
+* In cases where the migration rate is varied across the landscape (e.g. migration barriers like the scenario we tested from Figure 1B), changes to the migration rate between each pair of affected populations need to be made manually. After manual editing (which *can* include the deletion of migration connections), the plotting script will automatically plot the revised landscape with the thickness of the line connecting each population pair being proportional to the specified migration rate. If only one of the two required '-m' flag entries for each population pair has been accidentally deleted during editing, that connection will be plotted as a pink line.
+
+* If additional flags are desired in the *ms* flag file in (e.g. the flags necessary to simulate long distance migration), then those need to be added manually (they can be anywhere before the '-I' flag or after the '0.0' entry following the '-I' flag population sampling entries - see the next bullet). Both the plotter script and the screening script disregard any additional flags, meaning the screening script keeps any additional flags in its screened output and the plotter script only plots the landscape configuration as normal (it cannot plot long distance migration).
+
+* In the case of any manual editing, the '0.0' entry in the *ms* flag file that immediately follows all '-I' flag population sampling entries **must** remain in that position. This enables correct parsing of other optional, manually added flags in addition to '-m' flags, like '-es' and '-ej' flags. 
+
+* Although the screening script can also change the number of individuals sampled from ghost populations, which therefore turns them into new focal populations, it is **not** smart enough to add the locations of these newly created focal populations to the population coordinates file. The coordinates file is important for analysis using *un-PC*, *EEMS*, or *SpaceMix* after running the *ms* simulations. If focal populations are newly created in this way, their coordinates will need to be manually added to this file, and the coordinates **must** be given in order so that the coordinates for the top left population occurs first in the file, and the coordinates for the bottom right population occurs last in the file. 
+
+* **TIP** If the plotter script fails to run on an *ms* flag file after manual editing, try running it through the screening script using only the '-f' flag (i.e. requesting no edits). The screening script takes the *ms* flag file apart and re-assembles it in a standard way, which may resolve the problem. 
