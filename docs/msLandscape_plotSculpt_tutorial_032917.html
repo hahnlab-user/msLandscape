@@ -139,7 +139,7 @@ $(document).ready(function () {
 <li>msLandscape_ms_multipleSimulationWrapper.sh</li>
 </ul>
 <p>To follow along easily with exactly what is written below, you will need to make these scripts executable. This can be done by running <code>chmod u+x &lt;scriptName&gt;</code> at the command line from within the directory containing the scripts, replacing <code>&lt;scriptName&gt;</code> with the name of the script (e.g. <code>chmod u+x msLandscape_create_ms_flagFile.py</code>).</p>
-<p>Alternatively, instead of pre-pending the ‘./’ to the scripts in order to run them as is done below, the Python scripts (ending in .py) can be run using e.g. ‘python msLandscape_create_ms_flagFile.py’, and the bash shell script (ending in .sh) can be run using e.g. ‘bash msLandscape_ms_multipleSimulationWrapper.sh’</p>
+<p>Alternatively, instead of pre-pending the ‘./’ to the scripts in order to run them as is done below, the Python scripts (ending in .py) can be run using e.g. <code>python msLandscape_create_ms_flagFile.py</code>, and the bash shell script (ending in .sh) can be run using e.g. <code>bash msLandscape_ms_multipleSimulationWrapper.sh</code></p>
 </div>
 <div id="lets-get-started" class="section level3">
 <h3>Let’s get started!</h3>
@@ -481,6 +481,15 @@ cd ~/Box\ Sync/Python_scripts/msLandscape
 <pre><code>... -m 23 35 3.0 ...</code></pre>
 <p>and</p>
 <pre><code>... -m 116 107 3.0 ...</code></pre>
+</div>
+<div id="saving-plots-directly-to-file" class="section level3">
+<h3>Saving plots directly to file</h3>
+<p>By default, the plots created by the <code>msLandscape_networkPlotter</code> function print directly to the screen. However it is also possible to save them directly to a file (in pdf format).</p>
+<p>Let’s do that here:</p>
+<pre class="r"><code>msLandscape::msLandscape_networkPlotter(msFlagFileName = &quot;~/Box Sync/Python_scripts/msLandscape/msLandscape_missingConnections_haploidSamples_ms_nsam_160_msFlagFile.txt&quot;,addPopnLabels = FALSE, savePlotToFile = TRUE, outputFileName = &quot;~/Box Sync/Python_scripts/msLandscape/msLandscape_networkPlotter_autoSavedPlot.pdf&quot;, plotWidth = 6, plotHeight = 6)</code></pre>
+<pre><code>## quartz_off_screen 
+##                 2</code></pre>
+<p>This makes a plot that is six inches wide and six inches tall, and saves it to the file (or path + file) that we specified.</p>
 </div>
 <div id="running-the-ms-simulations" class="section level3">
 <h3>Running the <em>ms</em> simulations</h3>
