@@ -1,8 +1,10 @@
 # *msLandscape*
-A toolbox to streamline the creation of landscape-scale simulations using the coalescent simulator *ms*
+A toolbox to streamline the creation of landscape-scale simulations using the coalescent simulator *ms*.
 *msLandscape* comprises an R package and a toolbox of other scripts that work seamlessly together with the R package.
 
-For a full tutorial on how to use *msLandscape* to automatically generate landscape-scale *ms* flag files and the workflow
+The main *msLandscape* webpage is <a href="https://hahnlab.github.io/msLandscape/">here</a>
+
+For a full walkthrough guide on how to use *msLandscape* to automatically generate landscape-scale *ms* flag files and the workflow
 for editing and 'sculpting' these landscapes to meet the desired shape, sampling patterns, and migration patterns for the
 landscape, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/msLandscape_plotSculpt_tutorial_032917.html">here</a>. 
 
