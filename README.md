@@ -4,8 +4,8 @@ A toolbox to streamline the creation of landscape-scale simulations using the co
 
 For a full tutorial on how to use *msLandscape* to automatically generate landscape-scale *ms* flag files and the workflow
 for editing and 'sculpting' these landscapes to meet the desired shape, sampling patterns, and migration patterns for the
-landscape, see the linked tutorial <a href="https://geohouse.github.io/msLandscape/">here</a>. 
+landscape, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/">here</a>. 
 
-To install the R package easily, make sure the devtools package is installed (using the command ```install.packages("devtools")``` in R if necessary). In R, then type ```devtools::install_github("geohouse/msLandscape")```. The package should load automatically.
+To install the R package easily, make sure the devtools package is installed (using the command ```install.packages("devtools")``` in R if necessary). In R, then type ```devtools::install_github("hahnlab/msLandscape")```. The package should load automatically.
 
 To use the toolbox of other scripts, download them and for ease of use make them excecutable.
