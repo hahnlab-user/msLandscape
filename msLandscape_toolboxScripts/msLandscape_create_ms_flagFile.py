@@ -779,19 +779,22 @@ if outputFileStem != "" :
         popnFileOut.write(coordHolder)
 else:
     print("")
-    print("Copy the following into a plain text file and use as a flag file for ms using the '-f' flag (e.g. ms nsam howmany -f <path to the plain text flag file>)")
+    print("Copy the following into a plain text file and use as a flag file for ms")
+    print("using the '-f' flag (e.g. ms nsam howmany -f <path to the plain text flag file>)")
     print("")
     print(finalSamplingHolder)
 
     # This prints the ascii representation of the grid for the ms call to the screen.
     print("")
-    print("This is the ASCII representation of the landscape that is simulated using the above ms simulation configuration:")
+    print("This is the ASCII representation of the landscape that is simulated")
+    print("using the above ms simulation configuration:")
     print("")
     print(tileOutputHolder)
 
     # Also print out the coordinates of the focal populations
     print("")
-    print("The coordinates for the focal (sampled) populations are (listed for populations from left to right, top to bottom):")
+    print("The coordinates for the focal (sampled) populations are")
+    print("(listed for populations from left to right, top to bottom):")
     print("")
     print(coordHolder)
     print("")
