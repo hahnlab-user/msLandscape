@@ -10,4 +10,4 @@ landscape, see the linked tutorial <a href="https://hahnlab.github.io/msLandscap
 
 To install the R package easily, make sure the devtools package is installed (using the command ```install.packages("devtools")``` in R if necessary). In R, then type ```devtools::install_github("hahnlab/msLandscape")```. The package should load automatically.
 
-To use the toolbox of other scripts, download them and for ease of use make them excecutable.
+The toolbox of other (non-R) scripts that are part of *msLandscape* are found in the directory.
