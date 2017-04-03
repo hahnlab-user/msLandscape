@@ -110,7 +110,7 @@ def checkInput():
         print("Exiting.")
         sys.exit()
 
-    print(fileListToConvert)
+    #print(fileListToConvert)
     return(fileListToConvert)
 
 # This is a stripped down version of the msFlagFile reader/parser. It does not deal with 
@@ -186,7 +186,7 @@ def readFlagFile():
             for indiv in range(int(populationSample)):
                 popnSamplingList.append(numFocalPopn)
     
-    print(popnSamplingList)
+    #print(popnSamplingList)
     
     return(popnSamplingList, isDiploidFile)
 
@@ -195,7 +195,7 @@ def parse_msOutputForSpaceMix(fileListForConversion,popnSamplingList, isDiploidF
 
     for fileNum, file in enumerate(fileListForConversion):
         fileSplit = file.split('_')
-        print(fileSplit)
+        #print(fileSplit)
         
         # If this is the first file, then set up to create the sample sizes output file. Only needs
         # to be created for this file, because it is common (ie unchanged) input for the rest of the 
@@ -263,7 +263,7 @@ def parse_msOutputForSpaceMix(fileListForConversion,popnSamplingList, isDiploidF
             refAlleleList = []
             
             for line in inputFile:
-                print(line.strip())
+                #print(line.strip())
             
                 if line.strip() == '//':
                     
@@ -271,7 +271,7 @@ def parse_msOutputForSpaceMix(fileListForConversion,popnSamplingList, isDiploidF
                     # Do that here.
                     refAllele = randint(0,1)
                     refAlleleList.append(refAllele)
-                    print("The reference allele is {}".format(refAllele))
+                    #print("The reference allele is {}".format(refAllele))
                     
                     # If the SNP counter is not 0, then this is at least the second locus (SNP)
                     # entry in the ms output, and need to first add the entry for the last 
@@ -281,9 +281,9 @@ def parse_msOutputForSpaceMix(fileListForConversion,popnSamplingList, isDiploidF
                     if SNPcounter != 0:
                         
                         if populationCounter not in SNPDict.keys():
-                            print("Adding.")
+                            #print("Adding.")
                             SNPDict[prevPopulationCounter] = str(populationAlleleSum) + ','
-                            print(SNPDict)
+                            #print(SNPDict)
                             # If this is the first file, then process for the sampling counts file.
                             if fileNum == 0:
                                 samplingDict[prevPopulationCounter] = str(populationSamplingSum) + ','
@@ -351,7 +351,7 @@ def parse_msOutputForSpaceMix(fileListForConversion,popnSamplingList, isDiploidF
                     # correct sorting of the populationCounterList when making the output file.
                     populationCounter = int(popnSamplingList[individualCounter - 1])
                 
-                    print("The population number is: {}".format(populationCounter))
+                    #print("The population number is: {}".format(populationCounter))
                 
                     # Add the population number to the list if it isn't there already.
                     if populationCounter not in populationCounterList:
@@ -380,8 +380,8 @@ def parse_msOutputForSpaceMix(fileListForConversion,popnSamplingList, isDiploidF
                             if fileNum == 0:
                                 samplingDict[prevPopulationCounter] += str(populationSamplingSum) + ','
                         
-                        print("Before locus end.")
-                        print(SNPDict)
+                        #print("Before locus end.")
+                        #print(SNPDict)
                         
                         # clear the holder after adding to dict.    
                         populationAlleleSum = 0
@@ -441,9 +441,9 @@ def createSpaceMixOutputFile(SNPDict, samplingDict, populationCounterList, allel
     with open(alleleCountsFileName,'w') as alleleOutFile, \
         open(sampleSizeFileName, 'w') as sampleOutFile:
         for popnNum in sortedPopulationCounterList:
-            print('pop Num is: {}'.format(str(popnNum)))
-            print(SNPDict)
-            print(samplingDict)
+            #print('pop Num is: {}'.format(str(popnNum)))
+            #print(SNPDict)
+            #print(samplingDict)
             # Omit the trailing comma from the last value in the dict entry
             # when writing to file
             alleleOutFile.write(SNPDict[popnNum][:-1] + '\n')
@@ -457,7 +457,7 @@ def parse_msOutputForEEMS(fileListForConversion,popnSamplingList, isDiploidFile)
     
     for fileNum, file in enumerate(fileListForConversion):
         fileSplit = file.split('_')
-        print(fileSplit)
+        #print(fileSplit)
         
         # The file split will return the full filename string (and therefore have 
         # length 1) if it does not contain '_'

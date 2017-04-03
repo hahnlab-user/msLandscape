@@ -28,7 +28,7 @@ msFlagFile = args.msFlagFile
 
 inputToConvert = args.msOutputToConvert
 
-print(inputToConvert)
+#print(inputToConvert)
 
 # Determine whether the input is a single file or a directory with many files, and 
 # parse the input into a list of file names to process.
@@ -72,7 +72,7 @@ def checkInput():
         print("Exiting.")
         sys.exit()
 
-    print(fileListToConvert)
+    #print(fileListToConvert)
     return(fileListToConvert)
 
 # This is a stripped down version of the msFlagFile reader/parser. It does not deal with 
@@ -114,12 +114,12 @@ def readFlagFile():
                     IFlagIndex = index
                     IFlagHolder = splitLine[index + 1]
         
-    print("The s flag location is: %d" % sFlagIndex)
-    print("The I flag location is: %d" % IFlagIndex)
+    #print("The s flag location is: %d" % sFlagIndex)
+    #print("The I flag location is: %d" % IFlagIndex)
 
     numPopnsIFlag = int(IFlagHolder)
 
-    print("There are %s populations to simulate based on the -I flag" % numPopnsIFlag)
+    #print("There are %s populations to simulate based on the -I flag" % numPopnsIFlag)
 
 
 # ----------
@@ -150,7 +150,7 @@ def readFlagFile():
             numFocalPopn += 1
             popnSamplingDict[numFocalPopn] = int(populationSample)
     
-    print(popnSamplingDict)
+    #print(popnSamplingDict)
     
     return(popnSamplingDict, numPopnsIFlag, isDiploidFile)
 
@@ -159,7 +159,7 @@ def makeGenotypeFiles(fileListForConversion, numPopns, isDiploidFile):
     for file in fileListForConversion:
     
         fileSplit = file.split('_')
-        print(fileSplit)
+        #print(fileSplit)
         
         # The file split will return the full filename string (and therefore have 
         # length 1) if it does not contain '_'
@@ -179,7 +179,7 @@ def makeGenotypeFiles(fileListForConversion, numPopns, isDiploidFile):
             fileStem = file.split('.')[0]
             eigenstratGenoOutputFile = fileStem + '.eigenstratgeno'
             
-        print(eigenstratGenoOutputFile)
+        #print(eigenstratGenoOutputFile)
         
         
         numIndividuals = 0
