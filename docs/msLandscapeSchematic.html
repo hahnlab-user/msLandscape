@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <title>msLandscape</title>
+        <link rel="stylesheet" href="main.css" type="text/css">
+    </head>
+    <body>
+      <h1><em>msLandscape</em> workflow</h1>  
+    <p>
+    
+        Schematic diagram (below) illustrating how <em>msLandscape</em> streamlines the process of generating landscape genetics simulations using <em>ms</em>, and how the analysis method <em>un-PC</em> fits into the analysis pipeline. 
+        </p>
+    <p>
+        In this diagram files are represented as rectangles and processing or analysis steps are represented as ovals, with dashed ovals being analysis methods outside the <em>msLandscape</em> toolbox or the <em>un-PC</em> package. Arrows denote workflow progression, with dashed arrows representing optional steps to visualize and edit <em>ms</em> flag files. 
+        </p>
+        <p>
+        <em>msLandscape</em> is a toolbox that first allows the largely automated generation, customization, and visualization of most landscape configurations. This information is specified by an <em>ms</em> flag file that then can be used to generate multiple independent coalescent simulations of any landscape using <em>ms</em>. These functions of <em>msLandscape</em> are highlighted in the light green box in the diagram. 
+        </p>
+    <p>
+            After simulation, <em>msLandscape</em> also includes tools to help convert the raw simulation results into the formats required for analysis using PCA, <em>EEMS</em>, and <em>SpaceMix</em>, which are highlighted in the dark green box in the diagram. A small amount of additional configuration needs to be completed manually by the user before <em>EEMS</em> or <em>SpaceMix</em> analysis is possible. 
+        </p>
+        <p>
+            The <em>un-PC</em> package is built to run using PCA results either from the <em>msLandscape</em> pipeline or from any other data source. See the documentation for <a href="https://github.com/hahnlab/msLandscape"><em>msLandscape</em></a> and <a href="https://github.com/hahnlab/un-PC"><em>un-PC</em></a> for details and examples of their use.
+    
+    
+    </p>
+        
+        <img src="./images/msLandscape_workflowDiagram_800W_1031H_040617.gif" alt="Click for detailed version" style="width:800px;height:1031px;border:0;">
+        
+        
+        <a href="./index.html"><em>msLandscape</em> home </a>
+        
+        
+        
+        
+    </body>
+        
