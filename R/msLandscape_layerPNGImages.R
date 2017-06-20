@@ -77,7 +77,10 @@ msLandscape_layerPNGImages <- function(inputDirectory, outputFileStem = "msLands
         } else{
             inputImage <- png::readPNG(pngFileName)
             
-            alphaMatrix <- matrix(data = alpha, nrow = imageHeight, ncol = imageWidth)
+            inputHeight <- nrow(inputImage)
+            inputWidth <- ncol(inputImage)
+            
+            alphaMatrix <- matrix(data = alpha, nrow = inputHeight, ncol = inputWidth)
             
             print(paste("Layering file:", pngFileName))
             
