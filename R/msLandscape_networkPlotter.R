@@ -29,7 +29,7 @@ msLandscape_networkPlotter <- function(msFlagFileName, addPopnLabels = TRUE, sav
     # (setting all migration connections not specified in the -m flags to 0.0), otherwise
     # it is converted to 0 and is not uniquely parsable. This is the same parsing that 
     # the python flag file clean up script uses.
-    msFlagFile <- read.table(msFlagFileName, sep = "", colClasses = "character")
+    msFlagFile <- utils::read.table(msFlagFileName, sep = "", colClasses = "character")
     
     # parse the file name to determine whether this scenario is for haploid or diploid simulation. Returns TRUE/FALSE
     isDiploid <- grepl("diploid", msFlagFileName)
@@ -160,9 +160,12 @@ msLandscape_networkPlotter <- function(msFlagFileName, addPopnLabels = TRUE, sav
     # specified in one direction in the ms file.
     
     # set up the vertex size divisor to that the populations are plotted with sizes proportional to the number of individuals
-    # (regardless of whether haploid or diploid simulation)
+    # (regardless of whether haploid or diploid simulation) - use 3 for 8 x8 plots shrinking to 2 x 2.
     
+    # Use this for the .rmd tutorial.
     rawDivisor <- 2
+    
+    #rawDivisor <- 5
     
     if(isDiploid == TRUE){
         divisorToUse <- rawDivisor * 2
@@ -185,19 +188,19 @@ msLandscape_networkPlotter <- function(msFlagFileName, addPopnLabels = TRUE, sav
     if(isTRUE(addPopnLabels)){
         
         if(isTRUE(savePlotToFile)){
-            pdf(outputFileName, width = plotWidth, height = plotHeight)
+            grDevices::pdf(outputFileName, width = plotWidth, height = plotHeight)
             
-            plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
-                edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, rgb(1, 1, 1, 0), "chartreuse2"),
+            graphics::plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
+                edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, grDevices::rgb(1, 1, 1, 0), "chartreuse2"),
                 vertex.shape = "circle", 
                 edge.lty = 1)
                 #edge.lty = ifelse(msEdges$numMigrConnections == 2, 1, 3))
             
-            dev.off()
+            grDevices::dev.off()
         } else{
             
-            plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
-                edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, rgb(1, 1, 1, 0), "chartreuse2"),
+            graphics::plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
+                edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, grDevices::rgb(1, 1, 1, 0), "chartreuse2"),
                 vertex.shape = "circle", 
                 edge.lty = 1)
                
@@ -207,19 +210,19 @@ msLandscape_networkPlotter <- function(msFlagFileName, addPopnLabels = TRUE, sav
     } else{
         
         if(isTRUE(savePlotToFile)){
-            pdf(outputFileName, width = plotWidth, height = plotHeight)
+            grDevices::pdf(outputFileName, width = plotWidth, height = plotHeight)
             
-            plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
-                 edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, rgb(1, 1, 1, 0), "chartreuse2"),
+            graphics::plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
+                 edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, grDevices::rgb(1, 1, 1, 0), "chartreuse2"),
                  vertex.shape = "circle", vertex.label = "", 
                  edge.lty = 1)
             
-            dev.off()
+            grDevices::dev.off()
         } else{
         
             # Use edge.width / 2 for figures (save as 8x8, and allows scaling down to 2 x 2 in Illustrator.)
-            plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
-                edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, rgb(1, 1, 1, 0), "chartreuse2"),
+            graphics::plot(msNetwork, layout = igraph::layout_with_kk, vertex.size =(msVertices$numIndivsSampled)/divisorToUse, 
+                edge.arrow.size = 0, edge.width = msEdges$migrationRate, vertex.color = ifelse(msVertices$numIndivsSampled == 0, grDevices::rgb(1, 1, 1, 0), "chartreuse2"),
                 vertex.shape = "circle", vertex.label = "", 
                 edge.lty = 1)
         }
