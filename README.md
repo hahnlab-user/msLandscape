@@ -6,7 +6,7 @@ The main *msLandscape* webpage is <a href="https://hahnlab.github.io/msLandscape
 
 For a full walkthrough guide on how to use *msLandscape* to automatically generate landscape-scale *ms* flag files and the workflow
 for editing and 'sculpting' these landscapes to meet the desired shape, sampling patterns, and migration patterns for the
-landscape, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/msLandscape_plotSculpt_tutorial_033017.html">here</a>. 
+landscape, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/msLandscape_plotSculpt_tutorial_062017.html">here</a>. 
 
 To install the R package easily, make sure the devtools package is installed (using the command ```install.packages("devtools")``` in R if necessary). In R, then type ```devtools::install_github("hahnlab/msLandscape")```. The package should load automatically.
 
