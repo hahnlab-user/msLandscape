@@ -1,0 +1,67 @@
+---
+title: "Using *msLandscape_layerPNGImages* to create composite layered images of .png files"
+author: "Geoffrey House"
+date: "6/20/2017"
+output: html_document
+---
+
+`msLandscape_layerPNGImages` is a utility function to create composite images of two or more .png images that are stacked on top of each other using transparency (average color for each pixel across all images) to allow the features of all of the images to be visible relative to each other. This is meant to allow comparisons of EEMS, SpaceMix, or un-PC output under different scenarios. This works best with relatively few images because the amount of transparency for each image is proportional to the number of images used.
+
+This function only outputs the composite layered image directly to a .png file (not to a plot window). 
+
+#### Let's see how it works.
+
+#####*SpaceMix*
+
+We start with two images of *SpaceMix* output that we want to layer (these were only chosen because they are different from each other and therefore demonstrate how the layering works).
+
+![](./data/examples_for_msLandscape_layerPNGImages/SpaceMix/SpaceMix_1.png) ![](./data/examples_for_msLandscape_layerPNGImages/SpaceMix/SpaceMix_2.png)
+
+
+Now we run the layering by giving the path to the input directory that contains the .png files that we want to layer, and an (optional) output file stem for the output composite layered graph. Note: '_layered.png' gets automatically added to the end of the output file stem that we specify, so in this case the stem `SpaceMix_composite` becomes the file named `SpaceMix_composite_layered.png`
+
+This automatic addition to the output file stem allows the function to use a basic screen based on file name endings that attempts to prevent any previously layered composite images in the input directory from being used when creating any future layered composite images in the same directory. 
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_layerPNGImages(inputDirectory = "~/msLandscape-master/data/examples_for_msLandscape_layerPNGImages/SpaceMix/", outputFileStem = "SpaceMix_composite")
+
+```
+
+Now let's look at the composite layered image:
+
+![](./data/examples_for_msLandscape_layerPNGImages/SpaceMix/SpaceMix_composite_layered.png)
+
+Great! We see that both of the original images are represented in lighter colors, and the small areas where the same color overlaps from both original images (in the upper right) have the same darker color as in the original images. This is because the composite is constructed by averaging each of the color channels (r,g,b) for each pixel across all of the original input images. Because there are two input images used here, any population locations (colors) represented in only one of the input images are represented by appearing to have 50% transparency in the layered composite image. This degree of transparency is proportional to number of original images used to build the layered composite.  
+
+#####*un-PC*
+
+We can see a bit of this increased transparency when we layer three original images of *un-PC* output (we will not look at the originals here, just the layered composite image:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_layerPNGImages(inputDirectory = "~/msLandscape-master/data/examples_for_msLandscape_layerPNGImages/unPC/", outputFileStem = "unPC_composite")
+
+```
+
+![](./data/examples_for_msLandscape_layerPNGImages/unPC/unPC_composite_layered.png)
+
+We can see there are some small areas that show stacking of three partially transparent ellipses - one for each of the three different original images used.
+
+#####*EEMS*
+
+Next, we use an example of *EEMS* output by making a layered composite image of two original images:
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+msLandscape::msLandscape_layerPNGImages(inputDirectory = "~/msLandscape-master/data/examples_for_msLandscape_layerPNGImages/EEMS/", outputFileStem = "EEMS_composite")
+
+```
+
+![](./data/examples_for_msLandscape_layerPNGImages/EEMS/EEMS_composite_layered.png)
+
+In this case, if we look at the inferred relative migration values averaged across the landscape (shown in the trace across the bottom of the landscape), we can see there are some areas of the landscape that have consistent inferred migration between the two original images (appearing black), and other areas that are different between the two original images (appearing as 50% gray due to the color averaging for two input files).
+
+#### Note:
+This function can only create layered composite images for input .png files that have the same dimensions (height and width). If the input .png files do not, then the layering will fail. For example, if we try to merge two input files that have different dimensions, the function will give an error. If this happens, make sure all of the images are the same dimensions using an image editing program, and try running this function again.
+
