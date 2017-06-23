@@ -1,0 +1,4 @@
+These are all of the ms flag files (ms command line arguments) used to generate each of the tested scenarios (varying effective
+migration rates and the number of individuals sampled per population) that are presented in the 
+main manuscript and the supplemental figures. The ms flag files for the constant migration, migration barrier, and long-distance 
+migration scenarios are also available as Supplemental text S1-S3 associated with the paper.
