@@ -1,0 +1,3 @@
+These are visualizations from each of the 100 independent simulation iterations used for each of the three main migration scenarios used
+in the paper (constant migration, migration barrier, and long-distance migration). The visualizations presented in the paper are 
+averages calculated across these 100 independent simulation iterations. Generally the variance among independent iterations is moderate.
