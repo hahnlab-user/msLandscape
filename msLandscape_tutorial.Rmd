@@ -2,7 +2,7 @@
 title: Using *msLandscape* to create customized landscape configurations for simulation
   with *ms*
 author: "Geoffrey House"
-date: "March 30, 2017"
+date: "October 21, 2017"
 output:
   html_document: default
 ---
@@ -11,11 +11,13 @@ output:
 
 *msLandscape* is a toolbox to make customized landscape-scale simulations with the coalescent simulator *ms* easier and faster. *msLandscape* consists of an R package, Python scripts, and a bash shell script wrapper around *ms* that work seamlessly together, so you can focus on building your landscape instead of needing to manually write *ms* instruction files (referred to here as 'flag files') or cobbling together data conversions.
 
-The *msLandscape* R package contains two R functions:  
+The *msLandscape* R package contains three R functions:  
 
 1) msLandscape_networkPlotter - This quickly visualizes any landscape configuration (population locations and their migration connections) contained in an *ms* flag file, including information about the number of individuals sampled from each population and the migration rate between each pair of populations. 
 
 2) msLandscape_convertToEEMSDiffs - This is a utility function to finish the conversion of simulated data from *ms* into the form pairwise differences format required for EEMS. Use of this function is detailed in the '*msLandscape* data conversion' tutorial.
+
+3) msLandscape_layerPNGImages - This is a utility function to create composite images of two or more .png images that are stacked on top of each other using transparency (average color for each pixel across all images) to allow the features of all of the images to be visible relative to each other. This is meant to allow comparisons of *EEMS*, *SpaceMix*, or *un-PC* output under different scenarios. This works best with relatively few images. Use of this function is detailed in the '*msLandscape* layer images' tutorial.
 
 This overview will only work with the msLandscape_networkPlotter and three of its accompanying scripts:  
 
@@ -36,7 +38,7 @@ We start with the Python script to build the landscape we want and to automatica
 This landscape is built using hexagonal 'tiles' of one sampled (focal) population surrounded by six unsampled (ghost) populations. Let us take a look at how we generate one of these 'tiles':
 
 
-```{bash, echo = 2}
+```{bash, echo = c(1,2)}
 cd ~/msLandscape-master/msLandscape_toolboxScripts
 ./msLandscape_create_ms_flagFile.py -r 1 -c 1
 ```
@@ -446,7 +448,11 @@ This makes a plot that is six inches wide and six inches tall, and saves it to t
 
 ### Running the *ms* simulations
 
-OK, now we will return to our 'sculpted' landscape and will use it to create the coalescent simulations with *ms*. *msLandscape* includes a small wrapper script around *ms* that enables the generation of multiple, independent simulations from the same *ms* flag file. Each of these independent simulations will return slightly different results due to the stochastic nature of coalescent simulations, but each is consistent with the landscape features specified by the *ms* flag file. In order to ensure each of these multiple simulations is independent, Python is used within the wrapper script to generate random number seeds that are used for each *ms* invocation.
+OK, now we will return to our 'sculpted' landscape and will use it to create the coalescent simulations with *ms*. *msLandscape* includes a small wrapper script around *ms* that enables the generation of multiple, independent simulations from the same *ms* flag file. 
+
+**NOTE: For this script to run, *ms* must already be installed on the computer, and be located in a directory in the ```$PATH``` environmental variable. If typing ```which ms``` in the command line returns the path to *ms*, then this script should run without problems. If not, *ms* can be installed from Dr. Richard Hudson's website, and its path added to the ```$PATH``` environmental variable if necessary**
+
+Each of these independent simulations will return slightly different results due to the stochastic nature of coalescent simulations, but each is consistent with the landscape features specified by the *ms* flag file. In order to ensure each of these multiple simulations is independent, Python is used within the wrapper script to generate random number seeds that are used for each *ms* invocation.
 
 The arguments to the ```msLandscape_ms_multipleSimulationWrapper.sh``` script are as follows (and are also printed by running the script with no input):
 
@@ -465,8 +471,6 @@ Where -
 5) ```<outputFileStem>``` is the user entered file name prefix that will be used to construct the output file for each independent *ms* simulation. Files are named ```<outputFileStem>_Iter_##.msout``` where ```<outputFileStem>``` is replaced with its user entered value and ```##``` is replaced by the iteration number for the given simulation output.
 
 **Note:** The arguments **must** appear in exactly this order (separated by spaces) for the script to work correctly.
-
-Now we can put this all together to create the simulations. Running these simulations is simple as long as *ms* is on our ```$PATH```:
 
 Note - the code block below does not run in the .Rmd file
 
@@ -498,7 +502,7 @@ That is accomplished by other scripts in the *msLandscape* toolbox and are demon
 
 Although this work flow is versatile and should streamline building and proofing landscape-scale *ms* flag files, there are some important limitations to what it can do automatically:
 
-* In cases where the migration rate is varied across the landscape (e.g. migration barriers like the scenario we tested from Figure 1B), changes to the migration rate between each pair of affected populations need to be made manually. After manual editing (which *can* include the deletion of migration connections), the plotting script will automatically plot the revised landscape with the thickness of the line connecting each population pair being proportional to the specified migration rate. If only one of the two required ```-m``` flag entries for each population pair has been accidentally deleted during editing, that connection will be plotted as a pink line.
+* In cases where the migration rate is varied across the landscape (e.g. migration barriers like the scenario we tested from Figure 2B), changes to the migration rate between each pair of affected populations need to be made manually. After manual editing (which *can* include the deletion of migration connections), the plotting script will automatically plot the revised landscape with the thickness of the line connecting each population pair being proportional to the specified migration rate. If only one of the two required ```-m``` flag entries for each population pair has been accidentally deleted during editing, that connection will be plotted as a pink line.
 
 * If additional flags are desired in the *ms* flag file in (e.g. the flags necessary to simulate long distance migration), then those need to be added manually (they can be anywhere before the ```-I``` flag (e.g. a ```-t``` flag or after the '0.0' entry following the ```-I``` flag population sampling entries - see the next bullet). Both the plotter script and the screening script disregard any additional flags, meaning the screening script keeps any additional flags in its screened output and the plotter script only plots the landscape configuration as normal (it cannot plot long distance migration).
 
