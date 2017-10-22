@@ -124,13 +124,13 @@ $(document).ready(function () {
 </div>
 
 
-<p>Before any of these visualization methods can be run on the simulated data, they need to be converted from the <em>ms</em> output format into the specified format for each of the visualization methods. This tutorial demonstrates scripts in the msLandscape toolbox that are intented to make this conversion process easier.</p>
+<p>Before any of these visualization methods can be run on the simulated data, the data need to be converted from the <em>ms</em> output format into the specified format for each of the visualization methods. This tutorial demonstrates scripts in the <em>msLandscape</em> toolbox that are intented to make this conversion process easier.</p>
 <div id="pca-and-un-pc" class="section level1">
 <h1>PCA and <em>un-PC</em></h1>
 <div id="data-conversion-for-smartpca-pca-program-within-the-eigensoft-package-patterson-et-al.-2006" class="section level3">
 <h3>Data conversion for <em>smartPCA</em> PCA program within the <em>EIGENSOFT</em> package (Patterson <em>et al.</em> 2006)</h3>
-<p>The script <code>msLandscape_convert_msOutputFor_smartPCA.py</code> converts <em>ms</em> simulation output as demonstrated from the last step of the msLandscape tutorial into files that can then be fed directly into <em>smartPCA</em> to run the PCA analysis.</p>
-<p>To refresh, at the end of the msLandscape tutorial, we used <em>ms</em> to automatically create three independent, simulated datasets that each were consistent with the <em>ms</em> flag file that we provided.</p>
+<p>The script <code>msLandscape_convert_msOutputFor_smartPCA.py</code> converts <em>ms</em> simulation output (such as the output from the last step of the <em>msLandscape</em> tutorial) into files that can then be fed directly into <em>smartPCA</em> to run the PCA analysis.</p>
+<p>To refresh, at the end of the <em>msLandscape</em> tutorial, we used <em>ms</em> to automatically create three independent, simulated datasets that each were consistent with the <em>ms</em> flag file that we provided.</p>
 <div id="the-conversion-script-requires-two-inputs" class="section level5">
 <h5>The conversion script requires two inputs:</h5>
 <ol style="list-style-type: decimal">
@@ -160,18 +160,18 @@ convertFor_smartPCA_Iter_2.eigenstratgeno
 convertFor_smartPCA_Iter_2.par
 convertFor_smartPCA_Iter_3.eigenstratgeno
 convertFor_smartPCA_Iter_3.par</code></pre>
-<p><em>These are all of the files that </em>smartPCA* needs to run the PCA on the simulated data.*</p>
+<p><em>These are all of the files that</em> smartPCA <em>needs to run the PCA on the simulated data.</em></p>
 <div id="two-files-are-shared-among-all-iterations-of-the-simulated-data-because-their-characteristics-dont-change-between-the-simulation-iterations" class="section level5">
 <h5>Two files are shared among all iterations of the simulated data, because their characteristics don’t change between the simulation iterations:</h5>
 <ol style="list-style-type: decimal">
-<li><p>The <code>.ind</code> file links each sampled individual with their population number (corresponding to the population number giving by the network graphics representation of the landscape that we made in the msLandscape tutorial), one line per individual.</p></li>
+<li><p>The <code>.ind</code> file links each sampled individual with its population number (corresponding to the population number given by the network graphics representation of the landscape that we made in the <em>msLandscape</em> tutorial), one line per individual.</p></li>
 <li><p>The <code>.snp</code> file describes each of the independent loci (SNPs) that were simulated. Because this is simulated data, the SNPs are arbitrarily named and placed at evenly spaced, arbitrary locations along a fake genome.</p></li>
 </ol>
 </div>
 <div id="then-there-are-two-files-for-each-simulation-iteration" class="section level5">
 <h5>Then there are two files for each simulation iteration:</h5>
 <ol style="list-style-type: decimal">
-<li><p>The file ending in <code>.par</code> gives <em>smartPCA</em> instructions about which files to read as input when performing the PCA for this particular iteration, and specified the names of the output files for the PCA results.</p></li>
+<li><p>The file ending in <code>.par</code> gives <em>smartPCA</em> instructions about which files to read as input when performing the PCA for this particular iteration, and specifies the names of the output files for the PCA results.</p></li>
 <li><p>The file ending in <code>.eigenstratgeno</code> is the converted input data from the <em>ms</em> simulations ready for analysis using <em>smartPCA</em>.</p></li>
 </ol>
 </div>
@@ -181,7 +181,7 @@ convertFor_smartPCA_Iter_3.par</code></pre>
 <div id="an-example" class="section level5">
 <h5>An example:</h5>
 <p><code>&lt;pathTosmartPCA&gt;/smartPCA numoutevec 10 -p convertFor_smartPCA_Iter_1.par</code></p>
-<p>Where <pathTo*smartPCA*> is replaced by the actual path to the <em>smartPCA</em> executable file on the computer you’re using, the <code>numoutevec 10</code> argument tells it we want values for the first 10 PCA axes (this is the default and is required for <em>un-PC</em>), and the <code>-p</code> flag specifies the <code>.par</code> file to use that gives <em>smartPCA</em> all of the instructions it needs. Remember to have all of the files listed in the <code>.par</code> file in the same directory. It’s that simple!</p>
+<p>Where <code>&lt;pathTosmartPCA&gt;</code> is replaced by the actual path to the <em>smartPCA</em> executable file on the computer you’re using, the <code>numoutevec 10</code> argument tells it we want values for the first 10 PCA axes (this is the default and is required for <em>un-PC</em>), and the <code>-p</code> flag specifies the <code>.par</code> file to use that gives <em>smartPCA</em> all of the instructions it needs. Remember to have all of the files listed in the <code>.par</code> file in the same directory. It’s that simple!</p>
 </div>
 <div id="now-lets-look-at-the-output-files" class="section level5">
 <h5>Now let’s look at the output files:</h5>
@@ -196,7 +196,7 @@ convertFor_smartPCA_Iter_1.evec</code></pre>
 <p>Although it is not included here, writing a simple wrapper script around the <em>smartPCA</em> call can automate the process of running the PCA for each of the <code>.par</code> files.</p>
 <div id="more-involved---using-results-from-pca-programs-other-than-smartpca-for-un-pc" class="section level4">
 <h4>More involved - using results from PCA programs other than <em>smartPCA</em> for <em>un-PC</em></h4>
-<p>In the manuscript, we used <em>smartPCA</em> to run the PCA analysis for all analyzed datasets as input to <em>un-PC</em>, and <em>un-PC</em> works seamlessly with <em>smartPCA</em> results that are produced using the input. However <em>un-PC</em> will also work with PCA results output from other programs, although format conversion may be necessary.</p>
+<p>In the manuscript, we used <em>smartPCA</em> to run the PCA analysis for all analyzed datasets as input to <em>un-PC</em>, and <em>un-PC</em> works seamlessly with <em>smartPCA</em> results that are produced using the input files that are made by <em>msLandscape</em>. However <em>un-PC</em> will also work with PCA results output from other programs, although format conversion may be necessary.</p>
 <p>The output needs to first be converted into a format like the <code>.evec</code> files from <em>smartPCA</em> (see example below), and need to be named following the convention of <code>&lt;Name&gt;_Iter_##.evec</code>, where <code>&lt;Name&gt;</code> can be any desired description, and <code>##</code> is replaced by a unique, consecutive iteration number, starting from 1.</p>
 <p>Example of top 13 lines from <em>smartPCA</em> output:</p>
 <pre><code>           #eigvals:     &lt;PCA1&gt;     &lt;PCA2&gt;     &lt;PCA3&gt;     &lt;PCA4&gt;     &lt;PCA5&gt;
@@ -214,20 +214,20 @@ convertFor_smartPCA_Iter_1.evec</code></pre>
             Indiv_12     &lt;PCA1&gt;     &lt;PCA2&gt;     &lt;PCA3&gt;     &lt;PCA4&gt;     &lt;PCA5&gt;     2
             ...&lt;continues&gt;...</code></pre>
 <p>Where <code>&lt;PCA1&gt;</code> through <code>&lt;PCA5&gt;</code> represent the results for the first five PCA axes (columns) - <strong>For clarity, only the first five PCA axes are shown, but for <em>un-PC</em> to run, it needs the entry for each individual to have 10 PCA axes^. If PCA was run with less than 10 axes, create dummy columns with ‘NA’ entries to pad the data for each individual to give 11 entries (10 for PCA, one for population information - see end of this paragraph)</strong>. The first line lists the eigenvalue for each of the PCA axes, and is skipped by <em>un-PC</em>. The remaining lines are the scores for each individual for each PCA axis. Critically, the last column for each individuals’s entry is the population number they represent (consecutive from the the network graphics representation of the landscape that we made in the <em>msLandscape</em> tutorial). <em>Un-PC</em> needs this population information to appear in the 11th data column for each individual in order to correctly aggretate individuals into populations.</p>
-<p>^<em>un-PC</em> can run more directly on the output from other PCA programs (i.e. with less re-formatting needed), but only when visualizing the results from a single PCA output file (not when visualizing all result files in a specified directory). To do this, the PCA results still need to have a header row and an initial column of individual labels (both are dropped by <em>un-PC</em> but need to be present for correct parsing). However, there can be any number of PCA axis results listed, and the population information column is not required. Instead, in this case, the user needs to specify a file with coordinates <strong>for each individual as opposed to each population</strong> as the <code>geogrCoords</code> entry to <em>un-PC</em>. This file should contain pairs of coordinates with latitude listed first and longitude listed second (e.g. <code>12 24</code> with entries separated by whitespace), with one set of coordinates per line in the same order the individuals appear in the PCA output file to process. <em>Un-PC</em> then uses those individual-level population coordinates to determine the number of populations (all individuals from the same location) and to automatically assign individuals to the populations they belong.</p>
+<p>^<em>un-PC</em> can run more directly on the output from other PCA programs (i.e. with less re-formatting needed), but only when visualizing the results from a single PCA output file (not when visualizing all result files in a specified directory). To do this, the PCA results still need to have a header row and an initial column of individual labels (both are dropped by <em>un-PC</em> but need to be present for correct parsing). However, there can be any number of PCA axis results listed, and the population information column is not required. Instead, in this case, the user needs to specify a file with coordinates <strong>for each individual as opposed to each population</strong> as the <code>geogrCoords</code> entry to <em>un-PC</em>. This file should contain pairs of coordinates with latitude listed first and longitude listed second (e.g. <code>12 24</code> with entries separated by whitespace), with one set of coordinates per line in the same order the individuals appear in the PCA output file to process. <em>Un-PC</em> then uses those individual-level coordinates to determine the number of populations (all individuals from the same location) and to automatically assign individuals to the populations they belong.</p>
 </div>
 </div>
 </div>
 <div id="spacemix" class="section level1">
 <h1><em>SpaceMix</em></h1>
 <p><em>SpaceMix</em> runs in <em>R</em> and requires an allele counts matrix and a sample size matrix to run.</p>
-<p>The script <code>msLandscape_convert_msOutputFor_SpaceMix_EEMS.py</code> in the msLandscape_toolboxScripts``` directory automatically converts the simulated genetic data and the sampling information for the simulation scenario into two files for easy downstream use with <em>SpaceMix</em>:</p>
+<p>The script <code>msLandscape_convert_msOutputFor_SpaceMix_EEMS.py</code> in the <code>msLandscape_toolboxScripts</code> directory automatically converts the simulated genetic data and the sampling information for the simulation scenario into two files for easy downstream use with <em>SpaceMix</em>:</p>
 <ol style="list-style-type: decimal">
 <li><p>A .csv file of allele counts for each population, which consists of all individuals sampled at each distinct geographic location (population) on the landscape, tabulated for a randomly chosen allele at each locus following the <em>SpaceMix</em> instructions. This file will automatically tabulate the correct information regardless of whether haploid or diploid individuals were simulated (based on the file name of the <em>ms</em> flag file).</p></li>
 <li><p>A .csv file of the sample counts with the number of chromosomes sampled at each locus for each population (not each individual). This file will also automatically tabulate the correct information regardless of whether haploid or diploid individuals were simulated. This file is shared among all simulation iterations that use the same <em>ms</em> flag file because it does not change across different simulation iterations.</p></li>
 </ol>
-<div id="lets-see-how-this-works" class="section level4">
-<h4>Let’s see how this works:</h4>
+<div id="lets-see-how-this-works-using-the-ms-flag-file-we-made-in-the-mslandscape-tutorial" class="section level4">
+<h4>Let’s see how this works using the <em>ms</em> flag file we made in the <em>msLandscape</em> tutorial:</h4>
 <pre class="bash"><code>./msLandscape_convert_msOutputFor_SpaceMix_EEMS.py -m . -f writeOut_haploidSamples_ms_nsam_107_screened_3_times_msFlagFile.txt -o SpaceMixEEMSConversion</code></pre>
 <pre><code>## .
 ## This is a directory.
@@ -245,7 +245,7 @@ convertFor_smartPCA_Iter_1.evec</code></pre>
 ## /Users/geoffreyhouse/msLandscape-master/msLandscape_toolboxScripts/SpaceMixEEMSConversion_Iter_2_alleleCountsForSpaceMix.csv
 ## /Users/geoffreyhouse/msLandscape-master/msLandscape_toolboxScripts/SpaceMixEEMSConversion_Iter_3_alleleCountsForSpaceMix.csv
 ## /Users/geoffreyhouse/msLandscape-master/msLandscape_toolboxScripts/SpaceMixEEMSConversion_commonForAllIterations_sampleSizesForSpaceMix.csv</code></pre>
-<p>Great, we can see that there’s one <code>.csv</code> file with allele counts for each simulation iteration (with names ending in <code>alleleCountsForSpaceMix.csv</code>), and there is one shared <code>.csv</code> file with sample counts to use for all simulation iterations (with a name ending in <code>sampleSizesForSpaceMix.csv</code>). These files can be easily imported into <em>R</em> and used to run <em>SpaceMix</em> following the instructions in the <em>SpaceMix</em> vignettes.</p>
+<p>Great, we can see that there is one <code>.csv</code> file with allele counts for each simulation iteration (with names ending in <code>alleleCountsForSpaceMix.csv</code>), and there is one shared <code>.csv</code> file with sample counts to use for all simulation iterations (with a name ending in <code>sampleSizesForSpaceMix.csv</code>). These files can be easily imported into <em>R</em> and used to run <em>SpaceMix</em> following the instructions in the <em>SpaceMix</em> vignettes.</p>
 </div>
 </div>
 <div id="eems" class="section level1">
