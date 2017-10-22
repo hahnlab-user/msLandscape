@@ -8,7 +8,7 @@ To install the R package easily, make sure the devtools package is installed (us
 
 For a full walkthrough guide on how to use *msLandscape* to automatically generate landscape-scale *ms* flag files and the workflow
 for editing and 'sculpting' these landscapes to meet the desired shape, sampling patterns, and migration patterns for the
-landscape, including them to run *ms*, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/msLandscape_plotSculpt_tutorial_062017.html">here</a>. 
+landscape, including using them to run *ms*, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/msLandscape_plotSculpt_tutorial_062017.html">here</a>. 
 
 For a guide to using the scripts in the *msLandscape* toolbox to help convert *ms* output data to formats that *smartPCA* (for running PCA), *un-PC*, *SpaceMix*, and *EEMS* can use as input, see the linked tutorial <a href="https://hahnlab.github.io/msLandscape/msLandscape_dataConversion_tutorial_102217.html">here</a>.
 
