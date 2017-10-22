@@ -65,7 +65,7 @@ msLandscape_convertToEEMSDiffs <- function(dirWith_4eemsdiffs_files){
         # This input files is csv and has already been converted from the raw ms output to SpaceMix format
         # using my Python conversion script in the previous step called by the shell script that
         # calls this R script.
-        genotypeMatrix <- as.matrix(read.table(inputFileName,sep=',',header=FALSE))
+        genotypeMatrix <- as.matrix(utils::read.table(file = inputFileName,sep=',',header=FALSE))
         
         # For testing only
         #genotypeMatrix <- genotypeMatrix[1:10,1:10]
@@ -87,8 +87,8 @@ msLandscape_convertToEEMSDiffs <- function(dirWith_4eemsdiffs_files){
         pairGeneticDiffForEEMS <- outer(1:nIndiv,1:nIndiv, FUN = Vectorize(function(i,j) sum((genotypeMatrix[i,] - genotypeMatrix[j,])^2)/nSNPs))
         
         # The .diffs file output format is space separated distance entries with newlines between rows of the diff matrix entries
-        write.table(pairGeneticDiffForEEMS, file = outputFileName, append = FALSE, sep = " ",
-                    eol = "\n",row.names=FALSE, col.names=FALSE)
+        utils::write.table(x = pairGeneticDiffForEEMS, file = outputFileName, append = FALSE, sep = " ",
+                    eol = "\n", row.names=FALSE, col.names=FALSE)
         
     }
     # Invisible supresses extra printing from lapply.
